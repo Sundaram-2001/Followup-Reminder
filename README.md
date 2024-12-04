@@ -1,6 +1,6 @@
 <h1 align="center" id="title">Follow-up Mail Reminder</h1>
 
-<p id="description">A web application that automatically sends reminders to users to take a follow-up email with founders or HR contacts after initial communication. Users can set their preferred reminder interval (3 5 or 7 days) to ensure they don't miss important networking opportunities.</p>
+<p id="description">A web application that automatically sends reminders to users to take a follow-up email with founders or HR contacts after initial communication. Users can set their preferred reminder interval  to ensure they don't miss important networking opportunities.</p>
 
 <h2>🛠️ Installation Steps:</h2>
 
