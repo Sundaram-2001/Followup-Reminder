@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"my-app/operations"
+	"net/http"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -31,6 +33,19 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error connecting to DB: %v", err)
 	}
-
 	fmt.Println("Connected to the DB!")
+	query := `create table if not exists emails(
+	id serial primary key,
+	email text not null
+	)`
+	_, err = db.Exec(query)
+	if err != nil {
+		fmt.Println("Error creating a table!")
+	}
+	fmt.Println("Table Created Successfully!!")
+	http.HandleFunc("/email", func(res http.ResponseWriter, req *http.Request) {
+		operations.Add_Email(db, res, req)
+	})
+	PORT := "8090"
+	http.ListenAndServe(":"+PORT, nil)
 }

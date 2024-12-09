@@ -1,77 +1,102 @@
 <script>
-    import {number, z} from "zod"
-   
-    const emailSchema = z.string().email({message:"Invalid Email Address!"})
-    
-    let email = ''
-    let number_of_days=''
-    const validate = () => {
-      try {
-        emailSchema.parse(email)
-        return true
-      } catch (error) {
-        if (error instanceof z.ZodError) {
-          alert(error.errors[0].message)
-          return false
-        }
-      }
-    }
-   
-    const handleSubmit = async (event) => {
-      event.preventDefault()
-      if (validate()) {
-        try {
-          const response = await fetch('http://localhost:8090/saveData', {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ email, number_of_days })
-          })
-          if (response.ok) {
-            alert("Data Saved!!")
-          }
-        } catch (error) {
-          alert(error.message)
-          console.log(error)
-        }
-      }
-    }
-   </script>
-   
-   <main>
-    <form on:submit={handleSubmit}>
-     <div class="form-container">
-       <label for="email">Enter your email:</label>
-       <input type="text" name="email" bind:value={email} />
-       <label for="days">Number of Days:</label>
-       <input type="text" bind:value={number_of_days}>
-       <button type="submit">Submit!</button>
-     </div>
-    </form>
-   </main>
-   
-   <style>
-    main {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-   
-    .form-container {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      padding: 20px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      width: 300px;
-      text-align: center;
-    }
-   
-    input, button {
-      width: 100%;
-      padding: 8px;
-    }
-   </style>
+	import { z } from 'zod';
+
+	let email = '';
+	let numberOfDays = '';
+	let error = '';
+
+	const schema = z.object({
+		email: z.string().email('Invalid email address'),
+		numberOfDays: z.string().regex(/^\d+$/, 'Days must be a number')
+	});
+
+	function handleSubmit() {
+		try {
+			const validatedData = schema.parse({ email, numberOfDays });
+			// Submit logic here
+			console.log('Submitted:', validatedData);
+			error = '';
+		} catch (err) {
+			error = err.errors[0].message;
+		}
+	}
+</script>
+
+<div class="container">
+	<form on:submit|preventDefault={handleSubmit}>
+		<div class="form-group">
+			<label for="email">Email</label>
+			<input 
+				type="text" 
+				id="email" 
+				bind:value={email} 
+				placeholder="Enter your email"
+			/>
+		</div>
+		<div class="form-group">
+			<label for="days">Number of Days</label>
+			<input 
+				type="text" 
+				id="days" 
+				bind:value={numberOfDays} 
+				placeholder="Enter number of days"
+			/>
+		</div>
+		{#if error}
+			<div class="error">{error}</div>
+		{/if}
+		<button type="submit">Submit</button>
+	</form>
+</div>
+
+<style>
+	.container {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 100vh;
+	}
+
+	form {
+		width: 300px;
+		padding: 20px;
+		border: 1px solid #ccc;
+		border-radius: 8px;
+		box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+	}
+
+	.form-group {
+		margin-bottom: 15px;
+	}
+
+	label {
+		display: block;
+		margin-bottom: 5px;
+	}
+
+	input {
+		width: 100%;
+		padding: 8px;
+		border: 1px solid #ddd;
+		border-radius: 4px;
+	}
+
+	.error {
+		color: red;
+		margin-bottom: 10px;
+	}
+
+	button {
+		width: 100%;
+		padding: 10px;
+		background-color: #007bff;
+		color: white;
+		border: none;
+		border-radius: 4px;
+		cursor: pointer;
+	}
+
+	button:hover {
+		background-color: #0056b3;
+	}
+</style>
