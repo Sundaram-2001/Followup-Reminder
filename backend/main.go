@@ -10,6 +10,7 @@ import (
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
+	"github.com/rs/cors"
 )
 
 func main() {
@@ -34,18 +35,29 @@ func main() {
 		log.Fatalf("Error connecting to DB: %v", err)
 	}
 	fmt.Println("Connected to the DB!")
-	query := `create table if not exists emails(
+	createTbaleQuery := `create table if not exists emails(
 	id serial primary key,
-	email text not null
+	email text not null,
+	days int not null
 	)`
-	_, err = db.Exec(query)
+	_, err = db.Exec(createTbaleQuery)
 	if err != nil {
 		fmt.Println("Error creating a table!")
 	}
+	if err != nil {
+		fmt.Println("error adding the column ")
+	}
 	fmt.Println("Table Created Successfully!!")
-	http.HandleFunc("/email", func(res http.ResponseWriter, req *http.Request) {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/email", func(res http.ResponseWriter, req *http.Request) {
 		operations.Add_Email(db, res, req)
 	})
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{"http://localhost:5173"},
+		AllowedMethods: []string{"POST", "OPTIONS"},
+		AllowedHeaders: []string{"Content-Type"},
+	})
+	handler := c.Handler(mux)
 	PORT := "8090"
-	http.ListenAndServe(":"+PORT, nil)
+	http.ListenAndServe(":"+PORT, handler)
 }

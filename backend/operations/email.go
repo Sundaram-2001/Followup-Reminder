@@ -13,37 +13,48 @@ import (
 type Mail struct {
 	ID    int    `json:"id"`
 	Email string `json:"email"`
+	Days  int    `json:"days"`
 }
 
 func Add_Email(db *sql.DB, res http.ResponseWriter, req *http.Request) {
+	res.Header().Set("Content-Type", "text/plain; charset=utf-8")
+	res.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+	res.Header().Set("Access-Control-Max-Age", "15")
+
 	if req.Method != http.MethodPost {
 		http.Error(res, "Method Not Allowed!", http.StatusMethodNotAllowed)
 		return
 	}
+
 	body, err := io.ReadAll(req.Body)
 	if err != nil {
 		http.Error(res, "Error reading request body", http.StatusBadRequest)
 		return
 	}
-	//unmarshal the request
+	fmt.Println("Raw request body:", string(body))
+
 	var mail Mail
 	err = json.Unmarshal(body, &mail)
 	if err != nil {
 		http.Error(res, "Unable parsing the request body", http.StatusInternalServerError)
 		return
 	}
-	query := `INSERT INTO emails  (email) values ($1) returning id`
-	err = db.QueryRow(query, mail.Email).Scan(&mail.ID)
+	fmt.Printf("Parsed values - Email: %s, Days: %d\n", mail.Email, mail.Days)
+
+	query := `INSERT INTO emails (email,days) values ($1, $2) returning id`
+	err = db.QueryRow(query, mail.Email, mail.Days).Scan(&mail.ID)
 	if err != nil {
 		fmt.Println("Error inserting data", err)
 		http.Error(res, "Error Inserting Data", http.StatusInternalServerError)
 		return
 	}
+
 	response := map[string]interface{}{
 		"Message": "Data Inserted Successfully",
-		"Email":   mail.ID,
-		"ID":      mail.Email,
+		"Email":   mail.Email,
+		"ID":      mail.ID,
 	}
+
 	res.Header().Set("Content-Type", "application/json")
 	jsonResponse, err := json.Marshal(response)
 	if err != nil {
@@ -51,5 +62,6 @@ func Add_Email(db *sql.DB, res http.ResponseWriter, req *http.Request) {
 		http.Error(res, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
+
 	res.Write(jsonResponse)
 }
