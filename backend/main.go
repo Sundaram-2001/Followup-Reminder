@@ -52,6 +52,9 @@ func main() {
 	mux.HandleFunc("/email", func(res http.ResponseWriter, req *http.Request) {
 		operations.Add_Email(db, res, req)
 	})
+	mux.HandleFunc("/date", func(res http.ResponseWriter, req *http.Request) {
+		operations.Date(res, req)
+	})
 	c := cors.New(cors.Options{
 		AllowedOrigins: []string{"http://localhost:5173"},
 		AllowedMethods: []string{"POST", "OPTIONS"},
