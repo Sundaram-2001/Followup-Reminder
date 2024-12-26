@@ -9,9 +9,11 @@ import (
 
 func Date(res http.ResponseWriter, req *http.Request) {
 	currentTime := time.Now()
-	dateOnly := currentTime.Format("2006-01-02")
+	// dateOnly := currentTime.Format("2006-01-02")
+	futureTime := currentTime.AddDate(0, 0, 3)
+	futureDate := futureTime.Format("2006-01-02")
 	response := map[string]interface{}{
-		"date": dateOnly,
+		"date": futureDate,
 	}
 	jsonResponse, err := json.Marshal(response)
 	if err != nil {
