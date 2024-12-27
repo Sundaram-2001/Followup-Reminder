@@ -12,6 +12,7 @@
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^4.0.0",
 		"svelte": "^5.0.0",
+		"svelte-calendar": "^3.1.6",
 		"vite": "^5.0.3"
 	},
 	"dependencies": {

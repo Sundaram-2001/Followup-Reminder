@@ -1,5 +1,6 @@
 <script>
 	import {z} from "zod"
+	import { Datepicker } from 'svelte-calendar'
 	let email = ''
 	let numberOfDays = ''
 	let error = ''
@@ -31,7 +32,7 @@
         },
         body: JSON.stringify({
           email,
-          days: Number(numberOfDays)  // Changed from numberOfDays to days
+          days: Number(numberOfDays)  
         })
       })
       
@@ -66,14 +67,15 @@
 	   </div>
 	   <div class="form-group">
 		 <label for="days">Number of Days</label>
-		 <input
+		 <!-- <input
 		   type="number"
 		   id="days"
 		   bind:value={numberOfDays}
 		   placeholder="Enter number of days"
 		   min="1"
 		   required
-		 />
+		 /> -->
+		 <Datepicker />
 	   </div>
 	   {#if error}
 		 <div class="error">{error}</div>
