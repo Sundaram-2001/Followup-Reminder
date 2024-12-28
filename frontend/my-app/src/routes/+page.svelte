@@ -4,7 +4,7 @@
 	let email = ''
 	let numberOfDays = ''
 	let error = ''
-	
+	let format = 'dddd, MMMM D, YYYY'
 	const emailSchema = z.string().email({message: "Kindly enter a valid email!!"})
 	const daysSchema = z.number().min(1, {message: "Days must be at least 1"})
 	
@@ -67,15 +67,9 @@
 	   </div>
 	   <div class="form-group">
 		 <label for="days">Number of Days</label>
-		 <!-- <input
-		   type="number"
-		   id="days"
-		   bind:value={numberOfDays}
-		   placeholder="Enter number of days"
-		   min="1"
-		   required
-		 /> -->
-		 <Datepicker />
+		<div class="datepicker-wrapper">
+		 	<Datepicker {format}/>
+		</div>
 	   </div>
 	   {#if error}
 		 <div class="error">{error}</div>
@@ -85,53 +79,92 @@
    </div>
    
    <style>
-   .container {
-	 display: flex;
-	 justify-content: center;
-	 align-items: center;
-	 height: 100vh;
-   }
-   
-   form {
-	 width: 300px;
-	 padding: 20px;
-	 border: 1px solid #ccc;
-	 border-radius: 8px;
-	 box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-   }
-   
-   .form-group {
-	 margin-bottom: 15px;
-   }
-   
-   label {
-	 display: block;
-	 margin-bottom: 5px;
-   }
-   
-   input {
-	 width: 100%;
-	 padding: 8px;
-	 border: 1px solid #ddd;
-	 border-radius: 4px;
-   }
-   
-   .error {
-	 color: red;
-	 margin-bottom: 10px;
-   }
-   
-   button {
-	 width: 100%;
-	 padding: 10px;
-	 background-color: #007bff;
-	 color: white;
-	 border: none;
-	 border-radius: 4px;
-	 cursor: pointer;
-   }
-   
-   button:hover {
-	 background-color: #0056b3;
-   }
-   </style>
+	.container {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 100vh;
+	}
+	
+	form {
+		width: 300px;
+		padding: 20px;
+		border: 1px solid #ccc;
+		border-radius: 8px;
+		box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+		position: relative;
+		background: white;
+	}
+	
+	.form-group {
+		margin-bottom: 15px;
+		position: relative;
+	}
+	
+	label {
+		display: block;
+		margin-bottom: 5px;
+	}
+	
+	input {
+		width: 100%;
+		padding: 8px;
+		border: 1px solid #ddd;
+		border-radius: 4px;
+	}
+	
+	/* DatePicker styling */
+	.datepicker-wrapper {
+		width: 100%;
+		position: relative;
+	}
+	
+	.datepicker-wrapper :global(.input) {
+		width: 100%;
+		padding: 8px;
+		border: 1px solid #ddd;
+		border-radius: 4px;
+		height: auto;
+		font-size: inherit;
+	}
+	
+	/* Style the datepicker input and container */
+	:global(.datepicker-input) {
+		width: 100% !important;
+		padding: 8px !important;
+		border: 1px solid #ddd !important;
+		border-radius: 4px !important;
+		height: auto !important;
+	}
+	
+	:global(.datepicker) {
+		width: 100% !important;
+	}
+	
+	:global(.calendar) {
+		position: absolute !important;
+		z-index: 100 !important;
+		background: white !important;
+		width: 100% !important;
+		box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
+	}
+	
+	.error {
+		color: red;
+		margin-bottom: 10px;
+	}
+	
+	button {
+		width: 100%;
+		padding: 10px;
+		background-color: #007bff;
+		color: white;
+		border: none;
+		border-radius: 4px;
+		cursor: pointer;
+	}
+	
+	button:hover {
+		background-color: #0056b3;
+	}
+	</style>
