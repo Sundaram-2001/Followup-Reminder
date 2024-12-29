@@ -38,7 +38,7 @@ func main() {
 	createTbaleQuery := `create table if not exists emails(
 	id serial primary key,
 	email text not null,
-	days int not null
+	Selected_Date date not null 
 	)`
 	_, err = db.Exec(createTbaleQuery)
 	if err != nil {
@@ -51,9 +51,6 @@ func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/email", func(res http.ResponseWriter, req *http.Request) {
 		operations.Add_Email(db, res, req)
-	})
-	mux.HandleFunc("/date", func(res http.ResponseWriter, req *http.Request) {
-		operations.Date(res, req)
 	})
 	c := cors.New(cors.Options{
 		AllowedOrigins: []string{"http://localhost:5173"},

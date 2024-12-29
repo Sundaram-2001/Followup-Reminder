@@ -11,9 +11,9 @@ import (
 )
 
 type Mail struct {
-	ID    int    `json:"id"`
-	Email string `json:"email"`
-	Days  int    `json:"days"`
+	ID            int    `json:"id"`
+	Email         string `json:"email"`
+	Selected_Date string `json:"selectedDate"`
 }
 
 func Add_Email(db *sql.DB, res http.ResponseWriter, req *http.Request) {
@@ -39,10 +39,10 @@ func Add_Email(db *sql.DB, res http.ResponseWriter, req *http.Request) {
 		http.Error(res, "Unable parsing the request body", http.StatusInternalServerError)
 		return
 	}
-	fmt.Printf("Parsed values - Email: %s, Days: %d\n", mail.Email, mail.Days)
+	fmt.Printf("Parsed values - Email: %s, Selected_date: %s\n", mail.Email, mail.Selected_Date)
 
-	query := `INSERT INTO emails (email,days) values ($1, $2) returning id`
-	err = db.QueryRow(query, mail.Email, mail.Days).Scan(&mail.ID)
+	query := `INSERT INTO emails (email,Selected_Date) values ($1, $2) returning id`
+	err = db.QueryRow(query, mail.Email, mail.Selected_Date).Scan(&mail.ID)
 	if err != nil {
 		fmt.Println("Error inserting data", err)
 		http.Error(res, "Error Inserting Data", http.StatusInternalServerError)
@@ -50,9 +50,9 @@ func Add_Email(db *sql.DB, res http.ResponseWriter, req *http.Request) {
 	}
 
 	response := map[string]interface{}{
-		"Message": "Data Inserted Successfully",
-		"Email":   mail.Email,
-		"ID":      mail.ID,
+		"Message":       "Data Inserted Successfully",
+		"Email":         mail.Email,
+		"Selected Date": mail.Selected_Date,
 	}
 
 	res.Header().Set("Content-Type", "application/json")

@@ -2,16 +2,16 @@
 	import {z} from "zod"
 	import { Datepicker } from 'svelte-calendar'
 	let email = ''
-	let numberOfDays = ''
+	let selectedDate=new Date()
 	let error = ''
 	let format = 'dddd, MMMM D, YYYY'
 	const emailSchema = z.string().email({message: "Kindly enter a valid email!!"})
-	const daysSchema = z.number().min(1, {message: "Days must be at least 1"})
+	// const daysSchema = z.number().min(1, {message: "Days must be at least 1"})
 	
 	const validate = () => {
 	  try {
 		emailSchema.parse(email)
-		daysSchema.parse(Number(numberOfDays))
+		// daysSchema.parse(Number(numberOfDays))
 		return true
 	  } catch (err) {
 		if (err instanceof z.ZodError) {
@@ -32,7 +32,7 @@
         },
         body: JSON.stringify({
           email,
-          days: Number(numberOfDays)  
+          selectedDate: selectedDate.toISOString() 
         })
       })
       
@@ -40,6 +40,7 @@
         alert("Response Stored!")
         email = ''
         numberOfDays = ''
+		selectedDate = new Date() 
       } else {
         const errorText = await response.text()
         error = `Server error: ${errorText}`
@@ -68,7 +69,9 @@
 	   <div class="form-group">
 		 <label for="days">Number of Days</label>
 		<div class="datepicker-wrapper">
-		 	<Datepicker {format}/>
+		 	<Datepicker {format}
+			 bind:selected={selectedDate}
+			/>
 		</div>
 	   </div>
 	   {#if error}
